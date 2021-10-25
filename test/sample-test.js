@@ -1,23 +1,24 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Overflow", function () {
-  let overflow, stackDepthExt, stackDepthExt2, stackDepthAttack, stackDepthAttack2;
+describe("Testing EVM stack depth limits", function () {
+  let stackDepthTest, stackDepthExt, stackDepthExt2, stackDepthAttack, stackDepthAttack2;
 
   before(async () => {
-    // const Overflow = await ethers.getContractFactory("Overflow");
-    // overflow = await Overflow.deploy();
-    // await overflow.deployed();
+    const StackDepthTest = await ethers.getContractFactory("StackDepthTest");
+    stackDepthTest = await StackDepthTest.deploy();
+    await stackDepthTest.deployed();
 
-    // const StackDepthExt = await ethers.getContractFactory("StackDepthExt");
-    // stackDepthExt = await StackDepthExt.deploy();
-    // await stackDepthExt.deployed();
+    const StackDepthExt = await ethers.getContractFactory("StackDepthExt");
+    stackDepthExt = await StackDepthExt.deploy();
+    await stackDepthExt.deployed();
 
-    // stackDepthExt2 = await StackDepthExt.deploy();
-    // await stackDepthExt2.deployed();
+    stackDepthExt2 = await StackDepthExt.deploy();
+    await stackDepthExt2.deployed();
 
-    // await stackDepthExt.setAddr(stackDepthExt2.address);
-    // await stackDepthExt2.setAddr(stackDepthExt.address);
+    // set contract addresses equal to each other to call back and forth
+    await stackDepthExt.setAddr(stackDepthExt2.address);
+    await stackDepthExt2.setAddr(stackDepthExt.address);
 
     const StackDepthAttack = await ethers.getContractFactory("StackDepthAttack");
     stackDepthAttack = await StackDepthAttack.deploy();
@@ -30,34 +31,39 @@ describe("Overflow", function () {
     await stackDepthAttack2.setAddr(stackDepthAttack.address);
   });
 
-  // it("Overflow should not overflow when calling d()", async function () {
-  //   const dReturn = await overflow.d();
-  //   expect(dReturn).to.equal(true);
-  // });
+  it("StackDepthTest should reach limit when calling b()", async function () {
+    await expect(stackDepthTest.b()).to.be.reverted;
 
-  // it("Overflow should overflow when calling b()", async function () {
-  //   await expect(overflow.b()).to.be.reverted;
-  //   // try{
-  //   //   await overflow.b();
-  //   // } catch (error) {
-  //   //   console.log(error);
-  //   // }
-  // });
+    // Uncomment the following try-catch to see the stack trace and out of gas error
+    // try{
+    //   await stackDepthTest.b();
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  });
 
-  // it("StackDepthExt should run out of gas when calling into other contract", async () => {
-  //   await expect(stackDepthExt.callOther()).to.be.reverted;
-  //   try{
-  //     await stackDepthExt.callOther();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // });
+  it("StackDepthExt should run out of gas when calling into other contract", async () => {
+    await expect(stackDepthExt.callOther()).to.be.reverted;
+
+    // Uncomment the following try-catch to see the stack trace and out of gas error
+    // try{
+    //   await stackDepthExt.callOther();
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  });
 
   it("Should attack the other contract", async() => {
-    try{
-      await stackDepthAttack.attack(505);  //use 505
-    } catch (error) {
-      console.log(error);
-    }
+    // values less than 505 return true
+    // values greater than or equal to 505 revert with stack depth limit error
+    let calls = 505;
+    await expect(stackDepthAttack.attack(calls)).to.be.reverted; 
+
+    // Uncomment the following try-catch to see the stack trace and out of gas error
+    // try{
+    //   await stackDepthAttack.attack(calls);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   });
 });

@@ -15,7 +15,7 @@ contract StackDepthExt {
     }
 
     function callOther() external {
-        console.log(gasleft());
+        //console.log(gasleft());
         stackDepthExt.callOther();
     }
 }

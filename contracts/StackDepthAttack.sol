@@ -19,6 +19,7 @@ contract StackDepthAttack {
     }
 
     function attack(uint i) public {
+        //console.log(gasleft());
         if(i>1){
             attack(i-1);
         }

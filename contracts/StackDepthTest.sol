@@ -10,6 +10,7 @@ contract StackDepthTest {
     }
 
     function a() internal {
+        //console.log(gasleft());
         a();
     }
 
