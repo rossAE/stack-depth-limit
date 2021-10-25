@@ -1,15 +1,4 @@
-# Basic Sample Hardhat Project
+# Testing the Limits of EVM Stack Depth
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+This repo contains some contracts and a test script to demonstrate the limits of the stack depth of the EVM. It uses hardhat as a framework for writing and testing contracts, so once you have installed its dependencies, you can use ``npx hardhat test`` in the root directory to run the test as written.
+Please see accompanying blog post explaining the results of this test at x.
