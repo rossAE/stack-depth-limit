@@ -5,5 +5,7 @@ Please see accompanying blog post explaining the results of this test at x.
 
 ## Contracts
 StackDepthTest.sol - contains a basic contract to call a recursive, internal function from a contract that diverges.
+
 StackDepthExt.sol - contains a contract that calls out to another contract of the same type, forcing a divergent recursive loop of external calls between the two contracts.
+
 StackDepthAttack.sol - similar to StackDepthExt, but calls an internal, recursive function a user-supplied number of times before calling out to an external contract in order to force an unexpected stack depth limit error.
